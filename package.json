@@ -1,6 +1,6 @@
 {
   "name": "@verzach3/baileys-edge",
-  "version": "5.1.3",
+  "version": "5.1.4",
   "description": "WhatsApp API",
   "homepage": "https://github.com/adiwajshing/Baileys",
   "main": "lib/index.js",
@@ -68,8 +68,8 @@
     }
   },
   "files": [
-    "lib/*",
-    "WAProto/*",
+    "lib/**",
+    "WAProto/**",
     "WASignalGroup/*.js"
   ],
   "devDependencies": {
