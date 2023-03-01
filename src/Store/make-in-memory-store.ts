@@ -84,6 +84,7 @@ export default (
 					delete messages[id]
 				}
 			}
+			//Done
 
 			const chatsAdded = chats.insertIfAbsent(...newChats).length
 			logger.debug({ chatsAdded }, 'synced chats')

@@ -3,7 +3,7 @@ import makeWASocket, { AnyMessageContent, delay, DisconnectReason, fetchLatestBa
 import MAIN_LOGGER from '../src/Utils/logger'
 
 const logger = MAIN_LOGGER.child({ })
-logger.level = 'trace'
+logger.level = 'silent'
 
 const useStore = !process.argv.includes('--no-store')
 const doReplies = !process.argv.includes('--no-reply')
@@ -97,6 +97,16 @@ const startSock = async() => {
 				await saveCreds()
 			}
 
+			if(events["presence.update"], () => {
+				const { id, presences } = events["presence.update"]!
+				if (presences[id].lastKnownPresence === "composing"){
+					console.log("User is typing...")
+				}
+				if (presences[id].lastKnownPresence === "available"){
+					console.log("User is online...")
+				}
+			})
+
 			if(events.call) {
 				console.log('recv call event', events.call)
 			}
@@ -105,22 +115,6 @@ const startSock = async() => {
 			if(events['messaging-history.set']) {
 				const { chats, contacts, messages, isLatest } = events['messaging-history.set']
 				console.log(`recv ${chats.length} chats, ${contacts.length} contacts, ${messages.length} msgs (is latest: ${isLatest})`)
-			}
-
-			// received a new message
-			if(events['messages.upsert']) {
-				const upsert = events['messages.upsert']
-				console.log('recv messages ', JSON.stringify(upsert, undefined, 2))
-
-				if(upsert.type === 'notify') {
-					for(const msg of upsert.messages) {
-						if(!msg.key.fromMe && doReplies) {
-							console.log('replying to', msg.key.remoteJid)
-							await sock!.readMessages([msg.key])
-							await sendMessageWTyping({ text: 'Hello there!' }, msg.key.remoteJid!)
-						}
-					}
-				}
 			}
 
 			// messages updated like status delivered, message deleted etc.
